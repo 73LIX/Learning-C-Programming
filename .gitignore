@@ -1,0 +1,3 @@
+*.exe
+.vscode/
+Banking_System/account.dat
