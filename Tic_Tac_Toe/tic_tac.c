@@ -96,3 +96,15 @@ int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player){
         return 1;
     }
 }
+
+//just need to check whether all the spaces are filled or not and then if there a winner or not, if no then result == draw
+int draw_check(char board[BOARD_SIZE][BOARD_SIZE]){
+    for(int i = 0; i < BOARD_SIZE; i++){ //row
+        for(int j = 0; j < BOARD_SIZE; i++){ //col
+            if(board[i][j] == ' '){ //checking for empty spaces if yes then it's still not a draw so return 0(false)
+                return 0;
+            }
+        }
+    }
+    return 1; //if above condition is false then it means its filled without getting any winner that is leading to draw
+}
