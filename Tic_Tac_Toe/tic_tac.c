@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BOARD_SIZE 3
+
 typedef struct {
     int playerWon;
     int computerWon;
@@ -11,12 +13,17 @@ Score score = {.playerWon = 0, .computerWon = 0, .draw = 0}; //Initial scores
 
 void menu();
 void clear_screen();
-void print_board();
+void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 
 int main()
 {
+    char board[BOARD_SIZE][BOARD_SIZE] = {
+        {' ', 'O', ' '},
+        {'X', ' ', 'X'},
+        {' ', ' ', ' '}
+    };
     menu();
-    print_board();
+    print_board(board);
     return 0;
 }
 
@@ -37,9 +44,24 @@ void menu(){
    }
 }
 
-void print_board(){
+void print_board(char board [BOARD_SIZE][BOARD_SIZE]){
     clear_screen();
-    printf("\nScore - Player: %d, Computer: %d, Draws: %d", score.playerWon, score.computerWon, score.draw);
+    printf("Score - Player: %d, Computer: %d, Draws: %d", score.playerWon, score.computerWon, score.draw);
+    printf("\nTic-Tac-Toe\n");
+
+    for(int i = 0; i < BOARD_SIZE; i++){
+        printf("\n");
+        for(int j = 0; j < BOARD_SIZE; j++){
+            printf(" %c ", board[i][j]);
+            if(j<BOARD_SIZE - 1) {
+                printf("|");
+            }
+        }
+        if (i<BOARD_SIZE-1){
+            printf("\n---+---+---");
+        }
+    }
+    printf("\n");
 }
 
 void clear_screen(){
