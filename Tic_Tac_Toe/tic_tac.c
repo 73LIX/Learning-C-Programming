@@ -14,12 +14,14 @@ Score score = {.playerWon = 0, .computerWon = 0, .draw = 0}; //Initial scores
 void menu();
 void clear_screen();
 void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
+int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player); //taken char player to check which player has won, ---computer or the user---
+int draw_check(char board[BOARD_SIZE][BOARD_SIZE]);
 
 int main()
 {
-    char board[BOARD_SIZE][BOARD_SIZE] = {
-        {' ', 'O', ' '},
-        {'X', ' ', 'X'},
+    char board[BOARD_SIZE][BOARD_SIZE] = { //initializing a chara array (board)
+        {' ', ' ', ' '},
+        {' ', ' ', ' '},
         {' ', ' ', ' '}
     };
     menu();
@@ -49,19 +51,20 @@ void print_board(char board [BOARD_SIZE][BOARD_SIZE]){
     printf("Score - Player: %d, Computer: %d, Draws: %d", score.playerWon, score.computerWon, score.draw);
     printf("\nTic-Tac-Toe\n");
 
-    for(int i = 0; i < BOARD_SIZE; i++){
+    for(int i = 0; i < BOARD_SIZE; i++){ //iterates through the rows of the board
         printf("\n");
-        for(int j = 0; j < BOARD_SIZE; j++){
-            printf(" %c ", board[i][j]);
-            if(j<BOARD_SIZE - 1) {
+        for(int j = 0; j < BOARD_SIZE; j++){ //iterates through the cols of the current row
+
+            printf(" %c ", board[i][j]); //this prints the character stored in the current cell board[i][j] (which will be ' ', 'X', or 'O') surrounded by spaces for formatting.
+            if(j<BOARD_SIZE - 1) { //after printing a cell, this if condition checks if it's not the last cell in the current row. If it's not, it prints a vertical bar '|' to separate the cells.
                 printf("|");
             }
         }
-        if (i<BOARD_SIZE-1){
+        if (i<BOARD_SIZE-1){ //after printing a row, this if condition checks if it's not the last row. If it's not, it prints a horizontal separator to visually separate the rows.
             printf("\n---+---+---");
         }
     }
-    printf("\n");
+    printf("\n\n"); //adds some spacing at the end
 }
 
 void clear_screen(){
@@ -70,4 +73,26 @@ void clear_screen(){
         #else 
          system("clear");
         #endif
+}
+
+//checking for win or draw (3 rows and col win, 2 diagonal win)
+int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player){
+    for (int i = 0; i<BOARD_SIZE; i++){
+        //Row check for win
+        if(board[i][0] == player && board[i][1] == player && board[i][2] == player){
+            return 1;
+        }
+        //Column check for win
+        if (board[0][i] == player && board[1][i] == player && board[2][i] == player){
+            return 1;
+        }
+    }
+
+    //Hardcoding diagonal check (because board size ain't gonna change for this game so yeah :)
+    if (board[0][0] == player && board[1][1] == player && board[2][2] == player){
+        return 1;
+    }
+    if (board[0][2] == player && board[1][1] == player && board[2][0] == player){
+        return 1;
+    }
 }
