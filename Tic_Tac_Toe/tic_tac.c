@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define BOARD_SIZE 3
+
+int difficulty;
 
 typedef struct {
     int playerWon;
@@ -11,25 +14,41 @@ typedef struct {
 
 Score score = {.playerWon = 0, .computerWon = 0, .draw = 0}; //Initial scores
 
-void menu();
+int menu();
 void clear_screen();
 void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player); //taken char player to check which player has won, ---computer or the user---
 int draw_check(char board[BOARD_SIZE][BOARD_SIZE]);
+void play_game();
 
 int main()
 {
-    char board[BOARD_SIZE][BOARD_SIZE] = { //initializing a chara array (board)
+    srand(time(NULL));
+    int play_again;
+    difficulty = menu();
+    do {
+        play_game();
+        printf("\nPlay again?(1 for yes || 2 for no): ");
+        scanf("%d", &play_again);
+        } while (play_again == 1);
+
+    printf("\nThanks for playing!!!\n");
+
+    return 0;
+}
+
+void play_game(){
+    char board[BOARD_SIZE][BOARD_SIZE] = { //initializing a chara array (board)(tmp)
         {' ', ' ', ' '},
         {' ', ' ', ' '},
         {' ', ' ', ' '}
     };
-    menu();
+    //checking for who is the current_player
+    char current_player = rand() % 2 == 0 ? 'X' : 'O'; //rand will generate random number, and then the remainder with 2 would be either 0 or 1, using ternary operator for deciding factor(can use if else)
     print_board(board);
-    return 0;
 }
 
-void menu(){
+int menu(){
     int ch;
     while(1){
     printf("\n<--- Select difficulty level --->\n");
@@ -44,6 +63,7 @@ void menu(){
         break;
     }
    }
+   return ch;
 }
 
 void print_board(char board [BOARD_SIZE][BOARD_SIZE]){
