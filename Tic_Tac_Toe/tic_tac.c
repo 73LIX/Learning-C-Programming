@@ -20,8 +20,9 @@ void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player); //taken char player to check which player has won, ---computer or the user---
 int draw_check(char board[BOARD_SIZE][BOARD_SIZE]);
 void play_game();
-void player_move(char board[BOARD_SIZE][BOARD_SIZE]);
-void computer_move(char board[BOARD_SIZE][BOARD_SIZE]);
+void player_move(char board[BOARD_SIZE][BOARD_SIZE], char);
+void computer_move(char board[BOARD_SIZE][BOARD_SIZE], char);
+int is_valid_move(char board[BOARD_SIZE][BOARD_SIZE], int row, int col);
 
 int main()
 {
@@ -47,23 +48,26 @@ void play_game(){
     };
     //checking for who is the current_player and generating alternate chances
     char current_player = rand() % 2 == 0 ? 'X' : 'O'; //rand will generate random number, and then the remainder with 2 would be either 0 or 1, using ternary operator for deciding factor(can use if else), if 0 then X is playing that is the user or the computer that is O
+    print_board(board);
     while(1){
-        print_board(board);
-
         if(current_player == 'X'){// if yes than player will do the first move
-            player_move(board); //function to implement players move
+            player_move(board, 'X'); //function to implement players move
+            print_board(board);
             //for win, checking immediately after their move is made
             if(win_check(board, 'X')){
                 score.playerWon++;
+                print_board(board);
                 printf("\nPlayer wins!!!\n");
                 break;
             }
             //alternate move setting
             current_player = 'O'; //if X moves then its O's chance next
         } else { //else computer will play the first move
-            computer_move(board);
+            computer_move(board, 'O');
+            print_board(board);
             if(win_check(board, 'O')){
                 score.computerWon++;
+                print_board(board);
                 printf("\nComputer wins!!!\n");
                 break;
             }
@@ -71,6 +75,8 @@ void play_game(){
         }
 
         if(draw_check(board)){
+            score.draw++;
+            print_board(board);
             printf("\nIt's a draw!!!\n");
             break;
         }
@@ -79,13 +85,28 @@ void play_game(){
     //for win, checking immediately after their move is made
 }
 
-//User's move
-void player_move(char board[BOARD_SIZE][BOARD_SIZE]){
+int is_valid_move(char board[BOARD_SIZE][BOARD_SIZE], int row, int col){
+    return !(row < 0 || col < 0 || row > 2 || col > 2 || board[row][col]!= ' ');
+}
 
+//User's move
+void player_move(char board[BOARD_SIZE][BOARD_SIZE], char player){
+    int row, col;
+    do{
+        printf("\nPlayer %c's turn.\n", player);
+        printf("Enter row and column between(1-3) for %c: ", player);
+        scanf("%d", &row);
+        scanf("%d", &col);
+        //row and col are 0,1,2 but the user enters number between 1-3 i.e. 1/2/3 so converting the user input to our row/col value.
+        row--;
+        col--;
+    } while(!is_valid_move(board, row, col));
+    board[row][col] = player;
 }
 
 //Computer move
-void computer_move(char board[BOARD_SIZE][BOARD_SIZE]){
+void computer_move(char board[BOARD_SIZE][BOARD_SIZE], char player){
+    player_move(board, player); //tmp
 
 }
 
@@ -156,12 +177,13 @@ int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player){
     if (board[0][2] == player && board[1][1] == player && board[2][0] == player){
         return 1;
     }
+    return 0;
 }
 
 //just need to check whether all the spaces are filled or not and then if there a winner or not, if no then result == draw
 int draw_check(char board[BOARD_SIZE][BOARD_SIZE]){
     for(int i = 0; i < BOARD_SIZE; i++){ //row
-        for(int j = 0; j < BOARD_SIZE; i++){ //col
+        for(int j = 0; j < BOARD_SIZE; j++){ //col
             if(board[i][j] == ' '){ //checking for empty spaces if yes then it's still not a draw so return 0(false)
                 return 0;
             }
