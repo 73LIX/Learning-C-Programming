@@ -95,13 +95,14 @@ void player_move(char board[BOARD_SIZE][BOARD_SIZE]){
     for (int i = 0; i < BOARD_SIZE; i++) {
       for (int j = 0; j < BOARD_SIZE; j++) {
         if(board[i][j] == ' '){
-            count++;
+            count++; //if count stays 1, it means only 1 space is left 
             x = i;
             y = j;
         }
       }
     }
 
+    //If there is only one space left to fill then it will be automatically filled(last move in case of draw)
     if(count == 1){
         board[x][y] = 'X';
         return;
@@ -150,6 +151,29 @@ void computer_move(char board[BOARD_SIZE][BOARD_SIZE]){
         }
     }
 
+    //GOD MODE
+    if(difficulty == 2){
+        //Play center if available(4chances to win)
+        if(board[1][1] == ' '){ //if center is found empty
+            board[1][1] = 'O';
+            return;
+        }
+
+        //Play corner if available(3chances to win)
+        int corners[4][2] = { //initialized a corner array. which stores all the corners of the board
+            {0, 0},
+            {0, 2},
+            {2, 0},
+            {2, 2}
+        };
+        for(int i = 0; i< 4; i++){
+            if(board[corners[i][0]][corners[i][1]] == ' ') {
+                board[corners[i][0]][corners[i][1]] = 'O'; 
+                return;
+            }
+        }
+    }
+
     //Play any available move
     for(int i = 0; i < BOARD_SIZE; i++){
         for(int j = 0; j < BOARD_SIZE; j++){
@@ -181,6 +205,12 @@ int menu(){
 
 void print_board(char board [BOARD_SIZE][BOARD_SIZE]){
     clear_screen();
+    if(difficulty == 1){
+        printf("Playing Standard mode ^_^\n");
+    }
+    if(difficulty == 2){
+        printf("Entering GOD MODE(Undefeatable @_@)\n");
+    }
     printf("Score - Player: %d, Computer: %d, Draws: %d", score.playerWon, score.computerWon, score.draw);
     printf("\nTic-Tac-Toe\n");
 
