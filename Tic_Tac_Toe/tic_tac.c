@@ -20,6 +20,8 @@ void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player); //taken char player to check which player has won, ---computer or the user---
 int draw_check(char board[BOARD_SIZE][BOARD_SIZE]);
 void play_game();
+void player_move(char board[BOARD_SIZE][BOARD_SIZE]);
+void computer_move(char board[BOARD_SIZE][BOARD_SIZE]);
 
 int main()
 {
@@ -43,9 +45,48 @@ void play_game(){
         {' ', ' ', ' '},
         {' ', ' ', ' '}
     };
-    //checking for who is the current_player
-    char current_player = rand() % 2 == 0 ? 'X' : 'O'; //rand will generate random number, and then the remainder with 2 would be either 0 or 1, using ternary operator for deciding factor(can use if else)
-    print_board(board);
+    //checking for who is the current_player and generating alternate chances
+    char current_player = rand() % 2 == 0 ? 'X' : 'O'; //rand will generate random number, and then the remainder with 2 would be either 0 or 1, using ternary operator for deciding factor(can use if else), if 0 then X is playing that is the user or the computer that is O
+    while(1){
+        print_board(board);
+
+        if(current_player == 'X'){// if yes than player will do the first move
+            player_move(board); //function to implement players move
+            //for win, checking immediately after their move is made
+            if(win_check(board, 'X')){
+                score.playerWon++;
+                printf("\nPlayer wins!!!\n");
+                break;
+            }
+            //alternate move setting
+            current_player = 'O'; //if X moves then its O's chance next
+        } else { //else computer will play the first move
+            computer_move(board);
+            if(win_check(board, 'O')){
+                score.computerWon++;
+                printf("\nComputer wins!!!\n");
+                break;
+            }
+            current_player = 'X'; //if O moves then its X's chance next
+        }
+
+        if(draw_check(board)){
+            printf("\nIt's a draw!!!\n");
+            break;
+        }
+    }
+    //co - ordination for alternate chances(i.e. if player got the first move randomly then next move should be of computer and so on this keeps on repeating) and also check for draws and wins
+    //for win, checking immediately after their move is made
+}
+
+//User's move
+void player_move(char board[BOARD_SIZE][BOARD_SIZE]){
+
+}
+
+//Computer move
+void computer_move(char board[BOARD_SIZE][BOARD_SIZE]){
+
 }
 
 int menu(){
