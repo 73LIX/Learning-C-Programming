@@ -1,3 +1,5 @@
+//Enjoy beating the computer ^_^, if you can in God mode 😎
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
