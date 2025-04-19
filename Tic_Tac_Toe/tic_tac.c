@@ -20,8 +20,8 @@ void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 int win_check(char board[BOARD_SIZE][BOARD_SIZE], char player); //taken char player to check which player has won, ---computer or the user---
 int draw_check(char board[BOARD_SIZE][BOARD_SIZE]);
 void play_game();
-void player_move(char board[BOARD_SIZE][BOARD_SIZE], char);
-void computer_move(char board[BOARD_SIZE][BOARD_SIZE], char);
+void player_move(char board[BOARD_SIZE][BOARD_SIZE]);
+void computer_move(char board[BOARD_SIZE][BOARD_SIZE]);
 int is_valid_move(char board[BOARD_SIZE][BOARD_SIZE], int row, int col);
 
 int main()
@@ -51,7 +51,7 @@ void play_game(){
     print_board(board);
     while(1){
         if(current_player == 'X'){// if yes than player will do the first move
-            player_move(board, 'X'); //function to implement players move
+            player_move(board); //function to implement players move
             print_board(board);
             //for win, checking immediately after their move is made
             if(win_check(board, 'X')){
@@ -63,7 +63,7 @@ void play_game(){
             //alternate move setting
             current_player = 'O'; //if X moves then its O's chance next
         } else { //else computer will play the first move
-            computer_move(board, 'O');
+            computer_move(board);
             print_board(board);
             if(win_check(board, 'O')){
                 score.computerWon++;
@@ -90,24 +90,59 @@ int is_valid_move(char board[BOARD_SIZE][BOARD_SIZE], int row, int col){
 }
 
 //User's move
-void player_move(char board[BOARD_SIZE][BOARD_SIZE], char player){
+void player_move(char board[BOARD_SIZE][BOARD_SIZE]){
     int row, col;
     do{
-        printf("\nPlayer %c's turn.\n", player);
-        printf("Enter row and column between(1-3) for %c: ", player);
+        printf("\nPlayer X's turn.\n");
+        printf("Enter row and column between(1-3) for X: ");
         scanf("%d", &row);
         scanf("%d", &col);
         //row and col are 0,1,2 but the user enters number between 1-3 i.e. 1/2/3 so converting the user input to our row/col value.
         row--;
         col--;
     } while(!is_valid_move(board, row, col));
-    board[row][col] = player;
+    board[row][col] = 'X';
 }
 
 //Computer move
-void computer_move(char board[BOARD_SIZE][BOARD_SIZE], char player){
-    player_move(board, player); //tmp
+void computer_move(char board[BOARD_SIZE][BOARD_SIZE]){
+    //STANDARD MODE
+    //Check for immediate win
+    for(int i = 0; i < BOARD_SIZE; i++){
+        for(int j = 0; j < BOARD_SIZE; j++){
+            if(board[i][j] == ' '){
+                board[i][j] = 'O';
+                if(win_check(board, 'O')){
+                    return;
+                }
+                board[i][j] = ' ';
+            }
+        }
+    }
 
+    //Check for immediate block
+    for(int i = 0; i < BOARD_SIZE; i++){
+        for(int j = 0; j < BOARD_SIZE; j++){
+            if(board[i][j] == ' '){
+                board[i][j] = 'X';
+                if(win_check(board, 'X')){
+                    board[i][j] = 'O';
+                    return;
+                }
+            }
+            board[i][j] = ' ';
+        }
+    }
+
+    //Play any available move
+    for(int i = 0; i < BOARD_SIZE; i++){
+        for(int j = 0; j < BOARD_SIZE; j++){
+            if(board[i][j] == ' '){
+                board[i][j] = 'O';
+                return;
+            }
+        }
+    }
 }
 
 int menu(){
