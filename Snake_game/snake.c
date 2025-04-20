@@ -3,15 +3,51 @@
 #include <unistd.h>
 #include <termios.h>
 
+#define height 20
+#define width 60
+
+int score = 0;
+int fruit_x, fruit_y;
+int snakeHead_x, snakeHead_y;
+
 struct termios old_props;
 
 void clear_screen();
 void set_terminal_attributes();
 void reset_terminal_attributes();
+void draw();
 
 int main() {
     set_terminal_attributes();
+    draw();
     return 0;
+}
+
+void draw(){
+    clear_screen();
+    printf("\t\tWelcome to The Snake Game!!!");
+    printf("\n");
+    for(int i = 0; i < width + 2; i++){
+        printf("-");
+    }
+
+    for(int i = 0; i < height; i++){
+        printf("\n|");
+        for(int j = 0; j < width; j++){
+            if (i == snakeHead_y && j == snakeHead_x){ //i is for rows that is y cordinate, and j is for columns that is x cordinate
+                printf("O");
+            } else if(i == fruit_y && j == fruit_x){
+                printf("@");
+            } else {
+                printf(" ");
+            }
+        }printf("|");
+    }
+    printf("\n");
+    for(int i = 0; i < width + 2; i++){
+        printf("-");
+    }
+    printf("\n Score: %d\n", score);
 }
 
 void set_terminal_attributes(){
