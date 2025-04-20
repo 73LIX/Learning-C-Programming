@@ -29,6 +29,7 @@ void reset_terminal_attributes();
 void draw();
 void setup(); //initally setups the values of fruit and snake
 void game_play();
+void input();
 int input_available();
 
 int main() {
@@ -37,8 +38,10 @@ int main() {
     setup();
     while(1){
         draw();
+        input();
         game_play();
-        sleep(1);
+        int sleep_time = 3000000 / (score !=0 ? score : 10);
+        usleep(sleep_time);
     }
     return 0;
 }
@@ -115,6 +118,32 @@ void game_play(){
     } 
 }
 
+void input(){
+    if(input_available()){ //if input available, get it with getchar()
+        char ch = getchar();
+        switch (ch)
+        {
+        case 'w':
+            dir = UP;
+            break;
+        case 'a':
+            dir = LEFT;
+            break;
+        case 's':
+            dir = DOWN;
+            break;
+        case 'd':
+            dir = RIGHT;
+            break;
+        case 'x':
+            exit(0);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 //Check for input in the input buffer recieved from the keyboard
 int input_available(){
     struct timeval tv = {0L, 0L};
@@ -131,7 +160,7 @@ void setup(){
     //fruit will spawn randomly
     fruit_x = rand() % width;
     fruit_y = rand() % height;
-    dir = DOWN; //initally tmp settings for direction(just for testing out pass through boundaries)
+    dir = STOP; //initally tmp settings for direction(just for testing out pass through boundaries)
 }
 
 void set_terminal_attributes(){
