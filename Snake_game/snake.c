@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <termios.h>
+#include <time.h>
 
 #define height 20
 #define width 60
@@ -16,9 +17,12 @@ void clear_screen();
 void set_terminal_attributes();
 void reset_terminal_attributes();
 void draw();
+void setup(); //initally setups the values of fruit and snake
 
 int main() {
+    srand(time(NULL));
     set_terminal_attributes();
+    setup();
     draw();
     return 0;
 }
@@ -48,6 +52,16 @@ void draw(){
         printf("-");
     }
     printf("\n Score: %d\n", score);
+}
+
+//Setup's the positions of the fruit and snake head
+void setup(){
+    //snake will start from center
+    snakeHead_x = width / 2;
+    snakeHead_y = height / 2;
+    //fruit will spawn randomly
+    fruit_x = rand() % width;
+    fruit_y = rand() % height;
 }
 
 void set_terminal_attributes(){
