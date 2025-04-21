@@ -17,9 +17,12 @@ typedef enum {
 } Direction;
 
 Direction dir;
-int score = 0;
+int score;
 int fruit_x, fruit_y;
 int snakeHead_x, snakeHead_y;
+int tail_length;
+int tail_x[100];
+int tail_y[100];
 
 struct termios old_props;
 
@@ -62,7 +65,17 @@ void draw(){
             } else if(i == fruit_y && j == fruit_x){
                 printf("@");
             } else {
-                printf(" ");
+                int tail_found = 0; //flag to find the tail
+                for(int k = 0; k < tail_length; k++){
+                    if(tail_x[k] == j && tail_y[k] == i){
+                        printf("o");
+                        tail_found = 1;
+                        break;
+                    }
+                }
+                if(!tail_found){
+                    printf(" ");
+                }
             }
         }printf("|");
     }
@@ -74,6 +87,13 @@ void draw(){
 }
 
 void game_play(){
+    for(int i = tail_length - 1; i > 0; i--){
+        tail_x[i] = tail_x[i-1];
+        tail_y[i] = tail_y[i-1];
+    }
+    tail_x[0] = snakeHead_x;
+    tail_y[0] = snakeHead_y;
+
     //controls
     switch (dir)
     {
@@ -109,9 +129,18 @@ void game_play(){
         snakeHead_y = 0;
     }
 
+    //Collision = game over logic!
+    /*for(int i = 0; i < tail_length; i++){
+        if(tail_x[i] == snakeHead_x && tail_y[i] == snakeHead_y){
+            printf("You have hit your tail - Game Over!!!\n");
+            exit(0);
+        }
+    }*/
+
     //If the fruit is eaten
     if(snakeHead_x == fruit_x && snakeHead_y == fruit_y){ //Meaning head is exactly on the food
         score += 10;
+        tail_length++;
         //randomize the fruit spawn again
         fruit_x = rand() % width;
         fruit_y = rand() % height;  
@@ -161,6 +190,8 @@ void setup(){
     fruit_x = rand() % width;
     fruit_y = rand() % height;
     dir = STOP; //initally tmp settings for direction(just for testing out pass through boundaries)
+    score = 0;
+    tail_length = 0;
 }
 
 void set_terminal_attributes(){
